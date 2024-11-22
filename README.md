@@ -88,6 +88,59 @@ def mc_control (env,n_bins=g_bins, gamma = 1.0,
     pi = lambda s:{s:a for s, a in enumerate(np.argmax(Q, axis=env.observation_space.shape[0]))}[s]
 
     return Q, V, pi
+
+env = gym.make("CartPole-v1", render_mode="human")
+observation, info = env.reset(seed=42)
+
+import numpy as np
+
+# Example: Create a 5x3 Q-table (5 states, 3 actions)
+Q = np.random.rand(5, 3)
+
+# Save Q-values to a file
+np.save("state_action_values.npy", Q)
+
+# Verify that the file was saved
+print("Q-values saved to 'state_action_values.npy'.")
+
+#To load the action value function
+Q = np.load("state_action_values.npy")
+
+#To save the action value function
+np.save("state_action_values.npy", Q)
+
+observation, info = env.reset(seed=42)
+
+observation, reward, done, _, _ = env.step(0)
+print(done)
+
+env.action_space.n
+
+# To run the MC control without using the previous Q values
+optimal_Q, optimal_V, optimal_pi = mc_control (env,n_episodes=200)
+
+  # To run the MC control using the previous Q values and default parameters
+optimal_Q, optimal_V, optimal_pi = mc_control (env,n_episodes=200,
+                                    init_alpha = 0.5,min_alpha = 0.01, alpha_decay_ratio = 0.5,
+                                    init_epsilon = 1.0, min_epsilon = 0.1, epsilon_decay_ratio = 0.9,
+                                    max_steps=500, init_Q=Q)
+
+# To run the MC control using the previous Q values and modified parameters
+optimal_Q, optimal_V, optimal_pi = mc_control (env,n_episodes=500,
+                                    init_alpha = 0.01,min_alpha = 0.005, alpha_decay_ratio = 0.5,
+                                    init_epsilon = 0.1 , min_epsilon = 0.08, epsilon_decay_ratio = 0.9,
+                                    max_steps=500, init_Q=Q)
+
+np.count_nonzero(Q)
+
+np.size(Q)
+
+ep1 = decay_schedule(1, 0.1, 0.99, 50)
+
+x = np.arange(0,50)
+
+print('Name: DhariniPV            Reg no: 212222240024')
+plt.plot(x,ep1,label='ep1')
   ```
 ## OUTPUT:
 
